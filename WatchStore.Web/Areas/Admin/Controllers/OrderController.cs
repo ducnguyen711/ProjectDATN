@@ -92,7 +92,7 @@ namespace WatchStore.Web.Areas.Admin.Controllers
                 string table = null;
                 cart.ForEach(x => table += $"<tr><td>{_unitOfWork.ProductRepository.Get(x.ProductId).ProductName}</td><td>{x.Quantity}</td><td>{_unitOfWork.ProductRepository.Get(x.ProductId).Price}</td></tr>");
                 await _emailSender.SendEmailAsync(data.Email,
-                                    "Xác nhận địa chỉ email",
+                                    "Xác nhận địa chỉ mua hàng",
                                     $@"Bạn vừa đặt mua sản phẩm từ Watch Store. Thông tin mua hàng bao gồm:
                     <p>Họ tên: {data.FullName}</p>
                     <p>Email: {data.Email}</p>
@@ -121,10 +121,10 @@ namespace WatchStore.Web.Areas.Admin.Controllers
                                     );
                 await _unitOfWork.SaveChangeAsync();
                 StatusMessage = $"Đã xử lý đơn hàng: {data.Id}";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(OrderStatusUnprogressed));
             }
             StatusMessage = $"Xử lý đơn hàng {data.Id} không thành công !";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(OrderStatusUnprogressed));
         }
 
 

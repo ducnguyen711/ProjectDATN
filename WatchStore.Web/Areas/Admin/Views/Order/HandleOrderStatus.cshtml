@@ -58,7 +58,7 @@
             Thành tiền
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Total)
+            @Html.DisplayFor(model => model.Total)<sup>đ</sup>
         </dd>
     </dl>
     <div>
@@ -67,8 +67,8 @@
             <form asp-action="HandleOrderStatus">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
-                <div class="col-sm-5">
-                    <label asp-for="Status" class="control-label"></label>
+                <div class="col-sm-5" style="padding: 0">
+                    <label asp-for="Status" class="control-label" style="font-weight: bold"></label>
                     <select name="Status" class="form-control" required>
 @*                        <option value="0">Chưa xử lý</option>*@
                         <option value="Confirmed">Đã xác nhận</option>
@@ -83,8 +83,8 @@
         Success, // 3 thành công
         Canceled // 4 thất bại*@
                 </div>
-                <div class="col-sm-5">
-                    <label asp-for="DeliveryDate" class="control-label"></label>
+                <div class="col-sm-5" style="padding: 0">
+                    <label asp-for="DeliveryDate" class="control-label" style="font-weight: bold"></label>
                     <input asp-for="DeliveryDate" class="form-control" required />
                     <span asp-validation-for="DeliveryDate" class="text-danger"></span>
                 </div>
@@ -93,13 +93,12 @@
                     <input type="submit" value="Xử lý" class="btn btn-primary" />
                 </div>
                 </br>
-                </br>
             </form>
         </div>
     </div>
 </div>
 <div>
-    <a asp-action="Index" class="btn btn-primary">Quay lại danh sách đơn hàng</a>
+    <a asp-action="Index" class="btn btn-primary">Quay lại danh sách đơn hàng đã xác nhận</a>
     </br>
     </br>
 </div>

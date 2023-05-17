@@ -25,12 +25,6 @@
                             @Html.DisplayNameFor(model => model.FullName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Address)
-                        </th>
-                        <th>
-                            Quận/Huyện
-                        </th>
-                        <th>
                             Tỉnh/Thành
                         </th>
                         <th>
@@ -38,6 +32,9 @@
                         </th>
                         <th>
                             Sản phẩm mua
+                        </th>
+                        <th>
+                            Phương thức thanh toán
                         </th>
                         <th>
                             Thành tiền
@@ -56,12 +53,6 @@
                             @Html.DisplayNameFor(model => model.FullName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Address)
-                        </th>
-                        <th>
-                            Quận/Huyện
-                        </th>
-                        <th>
                             Tỉnh/Thành
                         </th>
                         <th>
@@ -69,6 +60,9 @@
                         </th>
                         <th>
                             Sản phẩm mua
+                        </th>
+                        <th>
+                            Phương thức thanh toán
                         </th>
                         <th>
                             Thành tiền
@@ -89,12 +83,6 @@
                                 @Html.DisplayFor(modelItem => item.FullName)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Address)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.District.Name)
-                            </td>
-                            <td>
                                 @thanhpho.Where(c => c.Id == item.District.CityId).FirstOrDefault().CityName
                             </td>
                             <td>
@@ -109,13 +97,16 @@
                                 </ul>
                             </td>
                             <td>
+                                @Html.DisplayFor(modelItem => item.PaymentMethod)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Total)<sup>đ</sup>
                             </td>
                             <td>
                                 Đang giao
                             </td>
                             <td>
-                                <a asp-action="HandleOrderStatus" class="btn btn-primary" asp-route-id="@item.Id"><i class="fa-solid fa-gear"></i></a>|
+                                <a asp-action="HandleOrderStatus" class="btn btn-primary" asp-route-id="@item.Id"><i class="fa-solid fa-gear"></i></a> |
                                 <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
                             </td>
                         </tr>

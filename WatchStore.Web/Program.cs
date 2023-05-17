@@ -32,9 +32,10 @@ services.AddIdentity<AppUser, IdentityRole>()
 //
 //
 builder.Services.AddOptions();
-var mailSetting = builder.Configuration.GetSection("MailSettings");
-builder.Services.Configure<MailSettings>(mailSetting);
-services.AddSingleton<IEmailSender, SendMailService>();
+var mailsetting = builder.Configuration.GetSection("MailSettings");
+builder.Services.Configure<MailSettings>(mailsetting);
+builder.Services.AddSingleton<IEmailSender, SendMailService>();
+
 //
 services.AddTransient<CartService>(); // thêm dịch vụ cart
 //

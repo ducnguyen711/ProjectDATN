@@ -348,7 +348,7 @@ body {
 .product-info .product-name {
     font-size: 1.6rem;
     color: var(--Black);
-    overflow: hidden;
+    height: 40px;
 }
 
 .product-info .product-price {
@@ -1869,13 +1869,14 @@ body {
 
 .active > .page-link, .page-link.active {
     z-index: 3;
-    color: var(--bs-pagination-active-color);
+    color: #fff !important;
     background-color: var(--Black);
     border-color: var(--Black);
 }
 
 .sort-btn.active {
     border: 1px solid var(--Black);
+    width: 165px;
 }
 
 
@@ -2151,4 +2152,13 @@ body {
     background-color: #fff;
     color: #000;
     border: 1px solid;
+}
+
+
+.page-item:first-child .page-link {
+    color: #000;
+}
+
+.page-item:not(:first-child) .page-link {
+    color: #000;
 }

@@ -53,5 +53,5 @@ public class WatchStoreDbContext : IdentityDbContext<AppUser>
     public virtual DbSet<District> Districts { get; set; }
     public virtual DbSet<Post> Posts { get; set; }
     public virtual DbSet<Review> Reviews { get; set; }
-    public virtual DbSet<Discuss> Discusss { get; set;}
+    //public virtual DbSet<Discuss> Discusss { get; set;}
 }

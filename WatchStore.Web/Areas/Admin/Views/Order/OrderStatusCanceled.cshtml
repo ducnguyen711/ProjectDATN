@@ -25,12 +25,6 @@
                             @Html.DisplayNameFor(model => model.FullName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Address)
-                        </th>
-                        <th>
-                            Quận/Huyện
-                        </th>
-                        <th>
                             Tỉnh/Thành
                         </th>
                         <th>
@@ -38,6 +32,9 @@
                         </th>
                         <th>
                             Sản phẩm mua
+                        </th>
+                        <th>
+                            Phương thức thanh toán
                         </th>
                         <th>
                             Thành tiền
@@ -56,12 +53,6 @@
                             @Html.DisplayNameFor(model => model.FullName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Address)
-                        </th>
-                        <th>
-                            Quận/Huyện
-                        </th>
-                        <th>
                             Tỉnh/Thành
                         </th>
                         <th>
@@ -69,6 +60,9 @@
                         </th>
                         <th>
                             Sản phẩm mua
+                        </th>
+                        <th>
+                            Phương thức thanh toán
                         </th>
                         <th>
                             Thành tiền
@@ -84,40 +78,37 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                            <tr>
-                                <td>
+                        <tr>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.FullName)
-                                </td>
-                                <td>
-                                @Html.DisplayFor(modelItem => item.Address)
-                                </td>
-                                <td>
-                                @Html.DisplayFor(modelItem => item.District.Name)
-                                </td>
-                                <td>
+                            </td>
+                            <td>
                                 @thanhpho.Where(c => c.Id == item.District.CityId).FirstOrDefault().CityName
-                                </td>
-                                <td>
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.OrderDate)
-                                </td>
-                                <td>
-                                    <ul>
+                            </td>
+                            <td>
+                                <ul>
                                     @foreach (var i in item.OrderDetails)
                                     {
-                                                <li>@sanpham.Where(s => s.Id == i.ProductId).FirstOrDefault().ProductName</li>
+                                        <li>@sanpham.Where(s => s.Id == i.ProductId).FirstOrDefault().ProductName</li>
                                     }
-                                    </ul>
-                                </td>
-                                <td>
+                                </ul>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PaymentMethod)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.Total)<sup>đ</sup>
-                                </td>
-                                <td>
-                                    Hủy đơn hàng
-                                </td>
-                                <td>
+                            </td>
+                            <td>
+                                Hủy đơn hàng
+                            </td>
+                            <td>
                                 <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -125,5 +116,5 @@
     </div>
 </div>
 @section scripts{
-        <script src="~/js/common.js"></script>
+    <script src="~/js/common.js"></script>
 }
