@@ -16,7 +16,7 @@
                     <h2 class="product-name">@cartitem.Product.ProductName</h2>
                 </div>
                 <div class="product-info-pq">
-                    <span class="product-price" style="color: red">@cartitem.Product.Price đ</span>
+                    <span class="product-price" style="color: red">@cartitem.Product.Price.ToString("N0")<sup>đ</sup></span>
                     <span class="product-price">SL: @cartitem.Quantity</span>
                 </div>
             </div>

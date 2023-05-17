@@ -16,11 +16,13 @@ namespace WatchStore.Web.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly CartService _cartService;
         private readonly IEmailSender _emailSender;
-        public ViewProductController(IUnitOfWork unitOfWork, CartService cartService, IEmailSender emailSender)
+        private readonly IVnPayService _vnPayService;
+        public ViewProductController(IUnitOfWork unitOfWork, CartService cartService, IEmailSender emailSender, IVnPayService vnPayService)
         {
             _unitOfWork = unitOfWork;
             _cartService = cartService;
             _emailSender = emailSender;
+            _vnPayService = vnPayService;
         }
         public IActionResult Index(int? id)
         {
@@ -121,10 +123,8 @@ namespace WatchStore.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout([Bind("Id,FullName,Address,Email,DistrictId,PhoneNumber,PaymentMethod,OderDate,Note")] Order order)
         {
-            using var transaction = _unitOfWork.WatchStoreDbContext.Database.BeginTransaction();
             try
             {
-                transaction.CreateSavepoint("RollBack");
                 var cart = _cartService.GetCartItems();
                 decimal total = 0;
                 cart.ForEach(x => total += x.Product.Price * x.Quantity);
@@ -133,35 +133,73 @@ namespace WatchStore.Web.Controllers
                 order.Status = Status.Unprogressed;
                 _unitOfWork.WatchStoreDbContext.Orders.Add(order);
                 await _unitOfWork.SaveChangeAsync();
-                List<OrderDetail> orderDetails = new List<OrderDetail>();
-                cart.ForEach(x => orderDetails.Add(new OrderDetail()
+                if (order.PaymentMethod == "COD")
                 {
-                    OrderId = order.Id,
-                    ProductId = x.Product.Id,
-                    Quantity = x.Quantity,
-                    Price = x.Product.Price
-                }));
-                foreach (var orderDetail in orderDetails)
-                {
-                    _unitOfWork.WatchStoreDbContext.OrderDetails.Add(orderDetail);
+                    List<OrderDetail> orderDetails = new List<OrderDetail>();
+                    cart.ForEach(x => orderDetails.Add(new OrderDetail()
+                    {
+                        OrderId = order.Id,
+                        ProductId = x.Product.Id,
+                        Quantity = x.Quantity,
+                        Price = x.Product.Price
+                    }));
+                    foreach (var orderDetail in orderDetails)
+                    {
+                        _unitOfWork.WatchStoreDbContext.OrderDetails.Add(orderDetail);
+                    }
+                    await _unitOfWork.SaveChangeAsync();
+                    cart.ForEach(x =>
+                    {
+                        var sp = _unitOfWork.WatchStoreDbContext.Products.Where(p => p.Id == x.Product.Id).FirstOrDefault();
+                        sp.Quantity = sp.Quantity - x.Quantity;
+                    });
+                    await _unitOfWork.SaveChangeAsync();
+                    _cartService.ClearCart();
+                    return View("Success");
                 }
-                await _unitOfWork.SaveChangeAsync();
-                cart.ForEach(x =>
+                else
                 {
-                    var sp = _unitOfWork.WatchStoreDbContext.Products.Where(p => p.Id == x.Product.Id).FirstOrDefault();
-                    sp.Quantity = sp.Quantity - x.Quantity;
-                });
-                await _unitOfWork.SaveChangeAsync();
-                _cartService.ClearCart();
-                transaction.Commit();
-                return View("Success");
+                    var url = _vnPayService.CreatePaymentUrl(order, HttpContext);
+                    await _unitOfWork.SaveChangeAsync();
+                    List<OrderDetail> orderDetails = new List<OrderDetail>();
+                    cart.ForEach(x => orderDetails.Add(new OrderDetail()
+                    {
+                        OrderId = order.Id,
+                        ProductId = x.Product.Id,
+                        Quantity = x.Quantity,
+                        Price = x.Product.Price
+                    }));
+                    foreach (var orderDetail in orderDetails)
+                    {
+                        _unitOfWork.WatchStoreDbContext.OrderDetails.Add(orderDetail);
+                    }
+                    await _unitOfWork.SaveChangeAsync();
+                    cart.ForEach(x =>
+                    {
+                        var sp = _unitOfWork.WatchStoreDbContext.Products.Where(p => p.Id == x.Product.Id).FirstOrDefault();
+                        sp.Quantity = sp.Quantity - x.Quantity;
+                    });
+                    await _unitOfWork.SaveChangeAsync();
+                    return Redirect(url);
+                }
             }
             catch
             {
-                transaction.RollbackToSavepoint("RollBack");
                 return View("Checkout");
             }
         }
+        public IActionResult PaymentCallback()
+        {
+            var response = _vnPayService.PaymentExecute(Request.Query);
+
+            if (response.FullName != "falsefalse")
+            {
+                return RedirectToAction("Checkout");
+            }
+            _cartService.ClearCart();
+            return RedirectToAction("Success");
+        }
+
         public IActionResult loadHuyen(int tinhid)
         {
             return Json(

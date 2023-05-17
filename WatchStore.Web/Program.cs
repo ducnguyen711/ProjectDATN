@@ -24,6 +24,7 @@ builder.Services.AddDbContext<WatchStoreDbContext>(options => options.UseSqlServ
 //    .AddEntityFrameworkStores<WatchStoreDbContext>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 //dang ky identity
 services.AddIdentity<AppUser, IdentityRole>()
         .AddEntityFrameworkStores<WatchStoreDbContext>()
